@@ -1,0 +1,11 @@
+version: "2"
+
+services:
+    app:
+        volumes:
+            - "~/.composer:/root/.composer"
+        ports:
+            - "8000:80"
+    db:
+        ports:
+            - "3306:3306"
