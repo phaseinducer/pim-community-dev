@@ -1,7 +1,7 @@
 APP=docker-compose exec -T app
-CONSOLE=$(APP) app/console
+CONSOLE=$(APP) /usr/bin/php app/console
 
-.PHONY: help install pim-install start stop composer db-create db-update clear-cache clear-all perm clean
+.PHONY: help install pim-install asset-install start stop composer db-create db-update clear-cache clear-all perm clean
 
 help:           ## Show this help
 	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'
@@ -11,8 +11,12 @@ install: start composer db-create clear-all pim-install perm
 
 pim-install:    ## Install the PIM
 	$(CONSOLE) oro:requirejs:generate-config --env=prod
-	$(CONSOLE) pim:install --env=prod --force
+	$(CONSOLE) pim:install --env=prod --force -vvv
 	$(CONSOLE) asset:install --symlink
+
+asset-install:  ## Install the assets
+	$(CONSOLE) asset:install
+	$(CONSOLE) pim:install:assets --env=prod
 
 start:          ## Start the Docker containers
 	docker-compose up -d
